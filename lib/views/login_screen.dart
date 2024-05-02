@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkfinder/views/register_screen.dart';
+import 'package:parkfinder/views/screen_user/navigation_bar.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -46,8 +47,7 @@ class LoginPage extends StatelessWidget {
               hintText: "Username",
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
-                  borderSide: BorderSide.none
-              ),
+                  borderSide: BorderSide.none),
               fillColor: Colors.purple.withOpacity(0.1),
               filled: true,
               prefixIcon: const Icon(Icons.person)),
@@ -68,6 +68,10 @@ class LoginPage extends StatelessWidget {
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NavigationBarScreen()),
+            );
           },
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
@@ -86,27 +90,30 @@ class LoginPage extends StatelessWidget {
   _forgotPassword(context) {
     return TextButton(
       onPressed: () {},
-      child: const Text("Forgot password?",
+      child: const Text(
+        "Forgot password?",
         style: TextStyle(color: Colors.purple),
       ),
     );
   }
 
-_signup(context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      const Text("Dont have an account? "),
-      TextButton(
-          onPressed: () {
+  _signup(context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Dont have an account? "),
+        TextButton(
+            onPressed: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                context,
+                MaterialPageRoute(builder: (context) => const RegisterScreen()),
               );
-          },
-          child: const Text("Sign Up", style: TextStyle(color: Colors.purple),)
-      )
-    ],
-  );
-}
+            },
+            child: const Text(
+              "Sign Up",
+              style: TextStyle(color: Colors.purple),
+            ))
+      ],
+    );
   }
+}
