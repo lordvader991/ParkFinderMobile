@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,6 @@ class RegisterScreen extends StatelessWidget {
                 Column(
                   children: <Widget>[
                     const SizedBox(height: 60.0),
-
                     const Text(
                       "Sign up",
                       style: TextStyle(
@@ -41,7 +40,7 @@ class RegisterScreen extends StatelessWidget {
                   children: <Widget>[
                     TextField(
                       decoration: InputDecoration(
-                          hintText: "Username",
+                          hintText: "Name",
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(18),
                               borderSide: BorderSide.none),
@@ -49,22 +48,41 @@ class RegisterScreen extends StatelessWidget {
                           filled: true,
                           prefixIcon: const Icon(Icons.person)),
                     ),
-
                     const SizedBox(height: 20),
-
                     TextField(
                       decoration: InputDecoration(
-                          hintText: "Email",
+                          hintText: "Last Name",
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(18),
                               borderSide: BorderSide.none),
                           fillColor: Colors.purple.withOpacity(0.1),
                           filled: true,
-                          prefixIcon: const Icon(Icons.email)),
+                          prefixIcon: const Icon(Icons.person)),
                     ),
-
                     const SizedBox(height: 20),
-
+                    TextField(
+                      decoration: InputDecoration(
+                          hintText: "Phone",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: BorderSide.none),
+                          fillColor: Colors.purple.withOpacity(0.1),
+                          filled: true,
+                          prefixIcon: const Icon(Icons.phone)),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: "Email",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none),
+                        fillColor: Colors.purple.withOpacity(0.1),
+                        filled: true,
+                        prefixIcon: const Icon(Icons.email),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     TextField(
                       decoration: InputDecoration(
                         hintText: "Password",
@@ -77,9 +95,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       obscureText: true,
                     ),
-
                     const SizedBox(height: 20),
-
                     TextField(
                       decoration: InputDecoration(
                         hintText: "Confirm Password",
@@ -96,10 +112,8 @@ class RegisterScreen extends StatelessWidget {
                 ),
                 Container(
                     padding: const EdgeInsets.only(top: 3, left: 3),
-
                     child: ElevatedButton(
-                      onPressed: () {
-                      },
+                      onPressed: () {},
                       child: const Text(
                         "Sign up",
                         style: TextStyle(fontSize: 20, color: Colors.white),
@@ -109,18 +123,19 @@ class RegisterScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         backgroundColor: Colors.purple,
                       ),
-                    )
-                ),
+                    )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     const Text("Already have an account?"),
                     TextButton(
                         onPressed: () {
-                            Navigator.pop(context);
+                          Navigator.pop(context);
                         },
-                        child: const Text("Login", style: TextStyle(color: Colors.purple),)
-                    )
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(color: Colors.purple),
+                        ))
                   ],
                 )
               ],
