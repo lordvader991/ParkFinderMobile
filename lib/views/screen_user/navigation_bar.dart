@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'map_screen.dart';
+import 'map_screen.dart';
 import 'profile_screen.dart';
 import 'vehicles_screen.dart';
 import 'garages_screen.dart';
@@ -13,8 +13,7 @@ class _NavigationBarScreenState extends State<NavigationBarScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _children = [
-    //MapScreen(),
-    ProfileScreen(),
+    MapScreen(),
     ProfileScreen(),
     VehiclesScreen(),
     GaragesScreen(),
