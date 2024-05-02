@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:parkfinder/views/register_screen.dart';
+import 'package:parkfinder/views/login_screen.dart';
 
 void main() {
-  runApp(const SignupPage());
+  runApp(const LoginPage());
 }
 

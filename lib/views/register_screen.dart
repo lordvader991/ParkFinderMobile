@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SignupPage extends StatelessWidget {
-  const SignupPage({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +117,7 @@ class SignupPage extends StatelessWidget {
                     const Text("Already have an account?"),
                     TextButton(
                         onPressed: () {
+                            Navigator.pop(context);
                         },
                         child: const Text("Login", style: TextStyle(color: Colors.purple),)
                     )
