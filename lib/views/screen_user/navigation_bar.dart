@@ -63,7 +63,7 @@ class _NavigationBarScreenState extends State<NavigationBarScreen> {
               label: 'Mis Garajes',
             ),
           ],
-          backgroundColor: Color.fromARGB(164, 171, 39, 220),
+          backgroundColor: Colors.purple,
           elevation: 20,
           selectedLabelStyle: TextStyle(color: Colors.white),
           unselectedLabelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),

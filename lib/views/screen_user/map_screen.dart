@@ -53,6 +53,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+    debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: GoogleMap(
           onMapCreated: _onMapCreated,
