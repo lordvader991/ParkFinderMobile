@@ -231,11 +231,11 @@ class RegisterScreen extends StatelessWidget {
                         country: countryController.text,
                         city: cityController.text,
                       );
-                      ApiHandler.signUp(signUpData.toJson()).then((response) {
-                        // Manejar la respuesta de la API aquí
-                      }).catchError((error) {
-                        // Manejar errores aquí
-                      });
+                        ApiHandler.signUp(signUpData.toJson()).then((response) {
+                                print("Guardado correctamente");
+                                }).catchError((error) {
+                                print("Error al guardar: $error");
+                            });
                     },
                     child: const Text(
                       "Sign up",
