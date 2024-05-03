@@ -55,7 +55,7 @@ LoginPage({super.key});
       children: [
         TextField(
           decoration: InputDecoration(
-              hintText: "Username",
+              hintText: "Email",
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
                   borderSide: BorderSide.none),

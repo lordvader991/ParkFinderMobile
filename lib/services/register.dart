@@ -19,4 +19,20 @@ class ApiHandler {
       throw Exception('Failed to sign up');
     }
   }
+
+  static Future<Map<String, dynamic>> login(Map<String, dynamic> credentials) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(credentials),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to login');
+    }
+  }
 }
