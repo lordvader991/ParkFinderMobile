@@ -232,9 +232,9 @@ class RegisterScreen extends StatelessWidget {
                         city: cityController.text,
                       );
                       ApiHandler.signUp(signUpData.toJson()).then((response) {
-                        // Manejar la respuesta de la API aquí
+                        print("Guardado correctamente");
                       }).catchError((error) {
-                        // Manejar errores aquí
+                        print("Error al guardar: $error");
                       });
                     },
                     child: const Text(
