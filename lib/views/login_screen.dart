@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/views/register_screen.dart';
+import 'package:parkfinder/views/screen_user/map_screen.dart';
 import 'package:parkfinder/views/screen_user/navigation_bar.dart';
+import 'package:parkfinder/services/user_service.dart';
 
 class LoginPage extends StatelessWidget {
+  LoginPage({Key? key}) : super(key: key);
 
-LoginPage({super.key});
- final TextEditingController usernameController = TextEditingController();
- final TextEditingController passwordController = TextEditingController();
- final TextEditingController roleController = TextEditingController();
- final TextEditingController firstNameController = TextEditingController();
- final TextEditingController lastNameController = TextEditingController();
- final TextEditingController genderController = TextEditingController();
- final TextEditingController dobController = TextEditingController();
- final TextEditingController emailController = TextEditingController();
- final TextEditingController phoneController = TextEditingController();
- final TextEditingController countryController = TextEditingController();
- final TextEditingController cityController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,7 +21,7 @@ LoginPage({super.key});
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _header(context),
+              _header(),
               _inputField(context),
               _forgotPassword(context),
               _signup(context),
@@ -37,8 +32,8 @@ LoginPage({super.key});
     );
   }
 
-  _header(context) {
-    return const Column(
+  _header() {
+    return Column(
       children: [
         Text(
           "Welcome Back",
@@ -54,42 +49,71 @@ LoginPage({super.key});
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextField(
+          controller: usernameController,
           decoration: InputDecoration(
-              hintText: "Username",
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
-                  borderSide: BorderSide.none),
-              fillColor: Colors.purple.withOpacity(0.1),
-              filled: true,
-              prefixIcon: const Icon(Icons.person)),
+            hintText: "Username",
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: BorderSide.none,
+            ),
+            fillColor: Colors.purple.withOpacity(0.1),
+            filled: true,
+            prefixIcon: Icon(Icons.person),
+          ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         TextField(
+          controller: passwordController,
           decoration: InputDecoration(
             hintText: "Password",
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
-                borderSide: BorderSide.none),
+              borderRadius: BorderRadius.circular(18),
+              borderSide: BorderSide.none,
+            ),
             fillColor: Colors.purple.withOpacity(0.1),
             filled: true,
-            prefixIcon: const Icon(Icons.password),
+            prefixIcon: Icon(Icons.lock),
           ),
           obscureText: true,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         ElevatedButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NavigationBarScreen()),
-            );
+            final email = usernameController.text;
+            final password = passwordController.text;
+            UserService(ApiService()).login(email, password).then((response) {
+              // Si el inicio de sesión es exitoso, redirige a la pantalla de MapScreen
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MapScreen()),
+              );
+            }).catchError((error) {
+              // Si hay un error en el inicio de sesión, muestra el error
+              print("Error al iniciar sesión: $error");
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text("Error"),
+                  content:
+                      Text("Failed to login. Please check your credentials."),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("OK"),
+                    ),
+                  ],
+                ),
+              );
+            });
           },
           style: ElevatedButton.styleFrom(
-            shape: const StadiumBorder(),
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: StadiumBorder(),
+            padding: EdgeInsets.symmetric(vertical: 16),
             backgroundColor: Colors.purple,
           ),
-          child: const Text(
+          child: Text(
             "Login",
             style: TextStyle(fontSize: 20, color: Colors.white),
           ),
@@ -101,7 +125,7 @@ LoginPage({super.key});
   _forgotPassword(context) {
     return TextButton(
       onPressed: () {},
-      child: const Text(
+      child: Text(
         "Forgot password?",
         style: TextStyle(color: Colors.purple),
       ),
@@ -112,30 +136,33 @@ LoginPage({super.key});
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Dont have an account? "),
+        Text("Don't have an account? "),
         TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>  RegisterScreen(
-                    usernameController: usernameController,
-                    roleController: roleController,
-                    firstNameController: firstNameController,
-                    lastNameController: lastNameController,
-                    genderController: genderController,
-                    dobController: dobController,
-                    emailController: emailController,
-                    passwordController: passwordController,
-                    phoneController: phoneController,
-                    countryController: countryController,
-                    cityController: cityController,
-                )),
-              );
-            },
-            child: const Text(
-              "Sign Up",
-              style: TextStyle(color: Colors.purple),
-            ))
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RegisterScreen(
+                  usernameController: usernameController,
+                  roleController: TextEditingController(),
+                  firstNameController: TextEditingController(),
+                  lastNameController: TextEditingController(),
+                  genderController: TextEditingController(),
+                  dobController: TextEditingController(),
+                  emailController: TextEditingController(),
+                  passwordController: TextEditingController(),
+                  phoneController: TextEditingController(),
+                  countryController: TextEditingController(),
+                  cityController: TextEditingController(),
+                ),
+              ),
+            );
+          },
+          child: Text(
+            "Sign Up",
+            style: TextStyle(color: Colors.purple),
+          ),
+        ),
       ],
     );
   }
