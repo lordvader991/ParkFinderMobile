@@ -3,8 +3,19 @@ import 'package:parkfinder/views/register_screen.dart';
 import 'package:parkfinder/views/screen_user/navigation_bar.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
 
+LoginPage({super.key});
+ final TextEditingController usernameController = TextEditingController();
+ final TextEditingController passwordController = TextEditingController();
+ final TextEditingController roleController = TextEditingController();
+ final TextEditingController firstNameController = TextEditingController();
+ final TextEditingController lastNameController = TextEditingController();
+ final TextEditingController genderController = TextEditingController();
+ final TextEditingController dobController = TextEditingController();
+ final TextEditingController emailController = TextEditingController();
+ final TextEditingController phoneController = TextEditingController();
+ final TextEditingController countryController = TextEditingController();
+ final TextEditingController cityController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -106,7 +117,19 @@ class LoginPage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                MaterialPageRoute(builder: (context) =>  RegisterScreen(
+                    usernameController: usernameController,
+                    roleController: roleController,
+                    firstNameController: firstNameController,
+                    lastNameController: lastNameController,
+                    genderController: genderController,
+                    dobController: dobController,
+                    emailController: emailController,
+                    passwordController: passwordController,
+                    phoneController: phoneController,
+                    countryController: countryController,
+                    cityController: cityController,
+                )),
               );
             },
             child: const Text(
