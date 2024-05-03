@@ -85,7 +85,7 @@ class LoginPage extends StatelessWidget {
               // Si el inicio de sesión es exitoso, redirige a la pantalla de MapScreen
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => MapScreen()),
+                MaterialPageRoute(builder: (context) => NavigationBarScreen()),
               );
             }).catchError((error) {
               // Si hay un error en el inicio de sesión, muestra el error
