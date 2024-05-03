@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:parkfinder/models/signup.dart';
+import 'package:intl/intl.dart'; // Importa el paquete intl
 import 'package:parkfinder/models/user.dart';
 import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/services/user_service.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({
     Key? key,
     required this.usernameController,
@@ -12,8 +12,8 @@ class RegisterScreen extends StatelessWidget {
     required this.firstNameController,
     required this.lastNameController,
     required this.genderController,
-    required this.dobController,
     required this.emailController,
+    required this.dobController,
     required this.passwordController,
     required this.phoneController,
     required this.countryController,
@@ -25,12 +25,19 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
   final TextEditingController genderController;
-  final TextEditingController dobController;
   final TextEditingController emailController;
+  final TextEditingController dobController;
   final TextEditingController passwordController;
   final TextEditingController phoneController;
   final TextEditingController countryController;
   final TextEditingController cityController;
+
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  DateTime? _selectedDate; // Fecha seleccionada por el usuario
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +45,6 @@ class RegisterScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 40),
-          height: MediaQuery.of(context).size.height - 50,
-          width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -61,7 +66,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: usernameController,
+                controller: widget.usernameController,
                 decoration: InputDecoration(
                   hintText: "Username",
                   border: OutlineInputBorder(
@@ -73,9 +78,10 @@ class RegisterScreen extends StatelessWidget {
                   prefixIcon: const Icon(Icons.person),
                 ),
               ),
+              // Resto de tus TextFields...
               const SizedBox(height: 20),
               TextField(
-                controller: roleController,
+                controller: widget.roleController,
                 decoration: InputDecoration(
                   hintText: "Role",
                   border: OutlineInputBorder(
@@ -89,7 +95,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: firstNameController,
+                controller: widget.firstNameController,
                 decoration: InputDecoration(
                   hintText: "First Name",
                   border: OutlineInputBorder(
@@ -103,7 +109,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: lastNameController,
+                controller: widget.lastNameController,
                 decoration: InputDecoration(
                   hintText: "Last Name",
                   border: OutlineInputBorder(
@@ -117,7 +123,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: genderController,
+                controller: widget.genderController,
                 decoration: InputDecoration(
                   hintText: "Gender",
                   border: OutlineInputBorder(
@@ -130,22 +136,29 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              TextField(
-                controller: dobController,
-                decoration: InputDecoration(
-                  hintText: "Date of Birth",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
+              GestureDetector(
+                onTap: () {
+                  _selectDate(context);
+                },
+                child: AbsorbPointer(
+                  child: TextFormField(
+                    controller: widget.dobController,
+                    decoration: InputDecoration(
+                      hintText: "Date of Birth",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                        borderSide: BorderSide.none,
+                      ),
+                      fillColor: Colors.purple.withOpacity(0.1),
+                      filled: true,
+                      prefixIcon: const Icon(Icons.calendar_today),
+                    ),
                   ),
-                  fillColor: Colors.purple.withOpacity(0.1),
-                  filled: true,
-                  prefixIcon: const Icon(Icons.calendar_today),
                 ),
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: emailController,
+                controller: widget.emailController,
                 decoration: InputDecoration(
                   hintText: "Email",
                   border: OutlineInputBorder(
@@ -159,7 +172,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: passwordController,
+                controller: widget.passwordController,
                 decoration: InputDecoration(
                   hintText: "Password",
                   border: OutlineInputBorder(
@@ -174,7 +187,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: phoneController,
+                controller: widget.phoneController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: "Phone",
@@ -189,7 +202,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: countryController,
+                controller: widget.countryController,
                 decoration: InputDecoration(
                   hintText: "Country",
                   border: OutlineInputBorder(
@@ -203,7 +216,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: cityController,
+                controller: widget.cityController,
                 decoration: InputDecoration(
                   hintText: "City",
                   border: OutlineInputBorder(
@@ -215,24 +228,23 @@ class RegisterScreen extends StatelessWidget {
                   prefixIcon: const Icon(Icons.location_city),
                 ),
               ),
-              // Más campos TextField aquí...
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.only(top: 3, left: 3),
                 child: ElevatedButton(
                   onPressed: () {
-                    final signUpData = SignUpData(
-                      username: usernameController.text,
-                      role: roleController.text,
-                      firstName: firstNameController.text,
-                      lastName: lastNameController.text,
-                      gender: genderController.text,
-                      dateOfBirth: dobController.text,
-                      email: emailController.text,
-                      password: passwordController.text,
-                      phone: phoneController.text,
-                      country: countryController.text,
-                      city: cityController.text,
+                    final signUpData = User(
+                      username: widget.usernameController.text,
+                      role: widget.roleController.text,
+                      firstName: widget.firstNameController.text,
+                      lastName: widget.lastNameController.text,
+                      gender: widget.genderController.text,
+                      dateOfBirth: widget.dobController.text,
+                      email: widget.emailController.text,
+                      password: widget.passwordController.text,
+                      phone: int.tryParse(widget.phoneController.text) ?? 0,
+                      country: widget.countryController.text,
+                      city: widget.cityController.text,
                     );
                     UserService(ApiService())
                         .registerUser(signUpData as User)
@@ -273,5 +285,24 @@ class RegisterScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Método para mostrar el selector de fecha
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate;
+        // Formatear la fecha seleccionada en el formato deseado
+        String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate!);
+        // Asignar la fecha formateada al controlador de texto de la fecha de nacimiento
+        widget.dobController.text = formattedDate;
+      });
+    }
   }
 }

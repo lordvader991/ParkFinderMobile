@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = "http://10.26.13.20:3000/api/v1/";
+  final String baseUrl = "http://10.26.3.167:3000/api/v1/";
 
   ApiService();
 
   Future<Map<String, dynamic>> createUser(Map<String, dynamic> userData) async {
-    final String path = "users/";
+    final String path = "register/";
 
     final response = await http.post(
       Uri.parse(baseUrl + path),
@@ -18,7 +18,13 @@ class ApiService {
     if (response.statusCode == 201) {
       return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to create user: ${response.statusCode}');
+       String errorMessage = "";
+      try {
+        errorMessage = jsonDecode(response.body)['error'];
+      } catch (e) {
+        errorMessage = "Unknown error occurred";
+      }
+      throw Exception('Failed to create user: ${response.statusCode}, Error: $errorMessage');
     }
   }
 
