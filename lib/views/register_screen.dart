@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Importa el paquete intl
+import 'package:intl/intl.dart'; 
 import 'package:parkfinder/models/user.dart';
 import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/services/user_service.dart';
@@ -37,7 +37,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  DateTime? _selectedDate; // Fecha seleccionada por el usuario
+  DateTime? _selectedDate; 
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +229,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              Container(
+             Container(
                 padding: const EdgeInsets.only(top: 3, left: 3),
                 child: ElevatedButton(
                   onPressed: () {
@@ -247,12 +247,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       city: widget.cityController.text,
                     );
                     UserService(ApiService())
-                        .registerUser(signUpData as User)
-                        .then((_) {
-                      print("Guardado correctamente");
-                    }).catchError((error) {
-                      print("Error al guardar: $error");
-                    });
+                      .registerUser(signUpData as User)
+                      .then((_) {
+                        print("Guardado correctamente");
+                      }).catchError((error) {
+                        print("Error al guardar: $error");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(error.toString())),
+                        );
+                      });
                   },
                   child: const Text(
                     "Sign up",
@@ -286,8 +289,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-
-  // Método para mostrar el selector de fecha
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -298,9 +299,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (pickedDate != null && pickedDate != _selectedDate) {
       setState(() {
         _selectedDate = pickedDate;
-        // Formatear la fecha seleccionada en el formato deseado
         String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate!);
-        // Asignar la fecha formateada al controlador de texto de la fecha de nacimiento
         widget.dobController.text = formattedDate;
       });
     }
