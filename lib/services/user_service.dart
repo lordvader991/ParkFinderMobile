@@ -1,3 +1,4 @@
+// UserService
 import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/models/user.dart';
 
@@ -22,8 +23,9 @@ class UserService {
   Future<void> login(String email, String password) async {
     try {
       final response = await _apiService.loginUser(email, password);
+      final token = response['data']['token'];
       print('Inicio de sesión exitoso: ${response["data"]["message"]}');
-      print('Token de autenticación: ${response["data"]["token"]}');
+      print('Token de autenticación: $token');
     } catch (e) {
       print('Error al iniciar sesión: $e');
       throw Exception('Failed to login: $e');

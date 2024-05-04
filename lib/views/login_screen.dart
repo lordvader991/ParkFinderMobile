@@ -1,9 +1,12 @@
+// LoginPage
 import 'package:flutter/material.dart';
 import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/views/register_screen.dart';
 import 'package:parkfinder/views/screen_user/map_screen.dart';
 import 'package:parkfinder/views/screen_user/navigation_bar.dart';
 import 'package:parkfinder/services/user_service.dart';
+import 'package:provider/provider.dart';
+import 'package:parkfinder/services/token_provider.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -13,6 +16,9 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokenProvider = Provider.of<TokenProvider>(context);
+    final token = tokenProvider.token;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(

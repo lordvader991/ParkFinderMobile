@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:parkfinder/services/api_service.dart';
+import 'package:parkfinder/views/login_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:parkfinder/services/token_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -96,7 +100,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Aquí deberías manejar el logout
+                    // Llama al método logoutUser de tu ApiService
+                    ApiService().logoutUser().then((response) {
+                      // Muestra el mensaje de éxito del logout
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text("Logout Successful"),
+                          content: Text(response["data"]["message"]),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                // Cierra el diálogo y navega de regreso a la pantalla de login
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage()),
+                                );
+                              },
+                              child: Text("OK"),
+                            ),
+                          ],
+                        ),
+                      );
+                      // Limpia el token almacenado en TokenProvider
+                      Provider.of<TokenProvider>(context, listen: false)
+                          .clearToken();
+                    }).catchError((error) {
+                      // Maneja los errores si ocurre algún problema durante el logout
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text("Error"),
+                          content: Text("Failed to logout. Please try again."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("OK"),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
                   },
                   child: Text('Log Out'),
                 ),

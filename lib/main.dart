@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:parkfinder/views/login_screen.dart';
 import 'package:parkfinder/views/screen_user/vehicle_register_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:parkfinder/services/token_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,9 +12,14 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: RegisterVehicleScreen(),
+    return ChangeNotifierProvider(
+      create: (context) =>
+          TokenProvider(), // Crea una instancia de TokenProvider
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Your App',
+        home: LoginPage(),
+      ),
     );
   }
 }
