@@ -1,15 +1,35 @@
-class Car {
-  final String id;
+class Dimensions {
+  final int height;
+  final int width;
+  final int length;
+
+  Dimensions({
+    required this.height,
+    required this.width,
+    required this.length,
+  });
+
+  factory Dimensions.fromJson(Map<String, dynamic> json) {
+    return Dimensions(
+      height: json['height'],
+      width: json['width'],
+      length: json['length'],
+    );
+  }
+}
+
+class Cars {
+  final String? id;
   final String userId;
   final String brand;
   final String model;
   final int year;
   final String color;
-  final Map<String, dynamic> dimensions;
+  final Dimensions dimensions;
   final String numberPlate;
 
-  Car({
-    required this.id,
+  Cars({
+    this.id,
     required this.userId,
     required this.brand,
     required this.model,
@@ -19,15 +39,15 @@ class Car {
     required this.numberPlate,
   });
 
-  factory Car.fromJson(Map<String, dynamic> json) {
-    return Car(
+  factory Cars.fromJson(Map<String, dynamic> json) {
+    return Cars(
       id: json['_id'],
       userId: json['user_id'],
       brand: json['brand'],
       model: json['model'],
       year: json['year'],
       color: json['color'],
-      dimensions: json['dimensions'],
+      dimensions: Dimensions.fromJson(json['dimensions']),
       numberPlate: json['number_plate'],
     );
   }

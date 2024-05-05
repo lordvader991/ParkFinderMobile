@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/services/car_service.dart';
+import 'package:parkfinder/services/token_provider.dart';
 import 'package:parkfinder/views/screen_user/vehicle_register_screen.dart';
 
 class VehiclesScreen extends StatelessWidget {
-  final ApiService apiService =
-      ApiService(); // Crear una instancia de ApiService
+  final TokenProvider tokenProvider = TokenProvider();
+  final ApiService apiService = ApiService();
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +27,9 @@ class VehiclesScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => RegisterVehicleScreen(
-                        carService: CarService(
-                            apiService), // Crear una instancia de CarService
-                        apiService: apiService, // Pasar apiService
+                        carService: CarService(tokenProvider),
+                        apiService: apiService,
+                        tokenProvider: tokenProvider, // Aquí debería ser tokenProvider
                       ),
                     ),
                   );

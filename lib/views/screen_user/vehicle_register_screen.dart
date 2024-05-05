@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:parkfinder/models/cars.dart';
 import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/services/car_service.dart';
+import 'package:parkfinder/services/token_provider.dart';
 
-class RegisterVehicleScreen extends StatelessWidget {
+
+class RegisterVehicleScreen extends StatefulWidget {
   final CarService carService;
   final ApiService apiService;
+  final TokenProvider tokenProvider;
 
   const RegisterVehicleScreen({
     Key? key,
     required this.carService,
     required this.apiService,
+    required this.tokenProvider,
   }) : super(key: key);
+
+  @override
+  _RegisterVehicleScreenState createState() => _RegisterVehicleScreenState();
+}
+
+class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
+  final TextEditingController _brandController = TextEditingController();
+  final TextEditingController _modelController = TextEditingController();
+  final TextEditingController _yearController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _widthController = TextEditingController();
+  final TextEditingController _lengthController = TextEditingController();
+  final TextEditingController _numberPlateController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -40,6 +60,7 @@ class RegisterVehicleScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: _brandController,
                   decoration: InputDecoration(
                       hintText: "Brand",
                       border: OutlineInputBorder(
@@ -51,6 +72,7 @@ class RegisterVehicleScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: _modelController,
                   decoration: InputDecoration(
                       hintText: "Model",
                       border: OutlineInputBorder(
@@ -62,6 +84,8 @@ class RegisterVehicleScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: _yearController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       hintText: "Year",
                       border: OutlineInputBorder(
@@ -73,6 +97,7 @@ class RegisterVehicleScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: _colorController,
                   decoration: InputDecoration(
                       hintText: "Color",
                       border: OutlineInputBorder(
@@ -84,6 +109,8 @@ class RegisterVehicleScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: _heightController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       hintText: "Height",
                       border: OutlineInputBorder(
@@ -95,6 +122,8 @@ class RegisterVehicleScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: _widthController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       hintText: "Width",
                       border: OutlineInputBorder(
@@ -106,6 +135,8 @@ class RegisterVehicleScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: _lengthController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       hintText: "Length",
                       border: OutlineInputBorder(
@@ -117,6 +148,7 @@ class RegisterVehicleScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: _numberPlateController,
                   decoration: InputDecoration(
                       hintText: "Number Plate",
                       border: OutlineInputBorder(
@@ -127,52 +159,18 @@ class RegisterVehicleScreen extends StatelessWidget {
                       prefixIcon: const Icon(Icons.phone)),
                 ),
                 const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.only(top: 3, left: 3),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Lógica para registrar el vehículo usando carService
-                      // Suponiendo que los valores del vehículo se recolectan aquí
-                      String brand =
-                          "Toyota"; // Obtén el valor del campo de la marca
-                      String model =
-                          "Corolla"; // Obtén el valor del campo del modelo
-                      int year = 2022; // Obtén el valor del campo del año
-                      String color =
-                          "Red"; // Obtén el valor del campo del color
-                      double height =
-                          1.5; // Obtén el valor del campo de la altura
-                      double width = 1.8; // Obtén el valor del campo del ancho
-                      double length =
-                          4.5; // Obtén el valor del campo de la longitud
-                      String numberPlate =
-                          "ABC123"; // Obtén el valor del campo de la placa
-
-                      carService.createCar(
-                        {
-                          'brand': brand,
-                          'model': model,
-                          'year': year,
-                          'color': color,
-                          'dimensions': {
-                            'height': height,
-                            'width': width,
-                            'length': length,
-                          },
-                          'number_plate': numberPlate,
-                        },
-                        "userId", // Pasa el ID del usuario, puedes obtenerlo del estado o de otro lugar
-                      );
-                    },
-                    child: const Text(
-                      "Register Vehicle",
-                      style: TextStyle(fontSize: 20, color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.purple,
-                    ),
+                ElevatedButton(
+                  onPressed: () {
+                    _registerVehicle();
+                  },
+                  child: const Text(
+                    "Register Vehicle",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.purple,
                   ),
                 ),
               ],
@@ -181,5 +179,56 @@ class RegisterVehicleScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _registerVehicle() async {
+    final car = Cars(
+      userId: widget.tokenProvider.userId ?? '',
+      brand: _brandController.text,
+      model: _modelController.text,
+      year: int.parse(_yearController.text),
+      color: _colorController.text,
+      dimensions: Dimensions(
+        height: int.parse(_heightController.text),
+        width: int.parse(_widthController.text),
+        length: int.parse(_lengthController.text),
+      ),
+      numberPlate: _numberPlateController.text,
+    );
+
+    try {
+      final newCar = await widget.carService.createCar(car);
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Success'),
+          content: Text('Vehicle registered with ID: ${newCar.id}'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: Text('Failed to register vehicle: $e'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
