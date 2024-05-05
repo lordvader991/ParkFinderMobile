@@ -162,6 +162,7 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
                 ElevatedButton(
                   onPressed: () {
                     _registerVehicle();
+                    print(TokenProvider().token);
                   },
                   child: const Text(
                     "Register Vehicle",
