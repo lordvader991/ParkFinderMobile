@@ -173,11 +173,11 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
               ElevatedButton(
                 onPressed: () async {
                     final tokenProvider = Provider.of<TokenProvider>(context, listen: false);
-                    final userId = tokenProvider.userId;
+                    //final userId = tokenProvider.userId;
                     final authToken = tokenProvider.token;
                     print('Token: $authToken');
                     Map<String, dynamic> requestBody = {
-                    'user_id': userId,
+                    //'user_id': userId,
                     'brand': _brandController.text,
                     'model': _modelController.text,
                     'year': int.parse(_yearController.text),
