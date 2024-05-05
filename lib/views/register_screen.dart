@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 import 'package:parkfinder/models/user.dart';
 import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/services/user_service.dart';
@@ -37,7 +37,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  DateTime? _selectedDate; 
+  DateTime? _selectedDate;
 
   @override
   Widget build(BuildContext context) {

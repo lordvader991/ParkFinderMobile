@@ -1,20 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:parkfinder/models/cars.dart';
-import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/services/car_service.dart';
 import 'package:parkfinder/services/token_provider.dart';
-
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterVehicleScreen extends StatefulWidget {
-  final CarService carService;
-  final ApiService apiService;
-  final TokenProvider tokenProvider;
-
   const RegisterVehicleScreen({
     Key? key,
-    required this.carService,
-    required this.apiService,
-    required this.tokenProvider,
   }) : super(key: key);
 
   @override
@@ -30,206 +24,207 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
   final TextEditingController _widthController = TextEditingController();
   final TextEditingController _lengthController = TextEditingController();
   final TextEditingController _numberPlateController = TextEditingController();
+  final VehicleService carService = VehicleService();
+  late Size mediaSize;
+
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            height: MediaQuery.of(context).size.height - 50,
-            width: double.infinity,
-            child: ListView(
-              children: <Widget>[
-                const SizedBox(height: 60.0),
-                const Text(
-                  "Vehicle",
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+    mediaSize = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Register Vehicle'),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 60),
+              Text(
+                'Vehicle',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Register your vehicle',
+                style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _brandController,
+                decoration: InputDecoration(
+                  hintText: 'Brand',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
                   ),
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  filled: true,
+                  prefixIcon: Icon(Icons.person),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Register your vehicle",
-                  style: TextStyle(fontSize: 15, color: Colors.grey[700]),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _brandController,
-                  decoration: InputDecoration(
-                      hintText: "Brand",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: BorderSide.none),
-                      fillColor: Colors.purple.withOpacity(0.1),
-                      filled: true,
-                      prefixIcon: const Icon(Icons.person)),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _modelController,
-                  decoration: InputDecoration(
-                      hintText: "Model",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: BorderSide.none),
-                      fillColor: Colors.purple.withOpacity(0.1),
-                      filled: true,
-                      prefixIcon: const Icon(Icons.person)),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _yearController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      hintText: "Year",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: BorderSide.none),
-                      fillColor: Colors.purple.withOpacity(0.1),
-                      filled: true,
-                      prefixIcon: const Icon(Icons.person)),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _colorController,
-                  decoration: InputDecoration(
-                      hintText: "Color",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: BorderSide.none),
-                      fillColor: Colors.purple.withOpacity(0.1),
-                      filled: true,
-                      prefixIcon: const Icon(Icons.phone)),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _heightController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      hintText: "Height",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: BorderSide.none),
-                      fillColor: Colors.purple.withOpacity(0.1),
-                      filled: true,
-                      prefixIcon: const Icon(Icons.phone)),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _widthController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      hintText: "Width",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: BorderSide.none),
-                      fillColor: Colors.purple.withOpacity(0.1),
-                      filled: true,
-                      prefixIcon: const Icon(Icons.phone)),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _lengthController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      hintText: "Length",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: BorderSide.none),
-                      fillColor: Colors.purple.withOpacity(0.1),
-                      filled: true,
-                      prefixIcon: const Icon(Icons.phone)),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _numberPlateController,
-                  decoration: InputDecoration(
-                      hintText: "Number Plate",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
-                          borderSide: BorderSide.none),
-                      fillColor: Colors.purple.withOpacity(0.1),
-                      filled: true,
-                      prefixIcon: const Icon(Icons.phone)),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    _registerVehicle();
-                    print(TokenProvider().token);
-                  },
-                  child: const Text(
-                    "Register Vehicle",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _modelController,
+                decoration: InputDecoration(
+                  hintText: 'Model',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
                   ),
-                  style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.purple,
-                  ),
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  filled: true,
+                  prefixIcon: Icon(Icons.person),
                 ),
-              ],
-            ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _yearController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Year',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  filled: true,
+                  prefixIcon: Icon(Icons.person),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _colorController,
+                decoration: InputDecoration(
+                  hintText: 'Color',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  filled: true,
+                  prefixIcon: Icon(Icons.phone),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _heightController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Height',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  filled: true,
+                  prefixIcon: Icon(Icons.phone),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _widthController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Width',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  filled: true,
+                  prefixIcon: Icon(Icons.phone),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _lengthController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Length',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  filled: true,
+                  prefixIcon: Icon(Icons.phone),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _numberPlateController,
+                decoration: InputDecoration(
+                  hintText: 'Number Plate',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  filled: true,
+                  prefixIcon: Icon(Icons.phone),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                    final tokenProvider = Provider.of<TokenProvider>(context, listen: false);
+                    final userId = tokenProvider.userId;
+                    final authToken = tokenProvider.token;
+                    print('Token: $authToken');
+                    Map<String, dynamic> requestBody = {
+                    'user_id': userId,
+                    'brand': _brandController.text,
+                    'model': _modelController.text,
+                    'year': int.parse(_yearController.text),
+                    'color': _colorController.text,
+                    'dimensions': {
+                        'height': int.parse(_heightController.text),
+                        'width': int.parse(_widthController.text),
+                        'length': int.parse(_lengthController.text),
+                    },
+                    'number_plate': _numberPlateController.text,
+                    };
+                    final response = await http.post(
+                        Uri.parse('http://192.168.1.3:3000/api/v1/auth/cars'),
+                        body: jsonEncode(requestBody),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization':'Bearer $authToken'
+                        },
+
+                    );
+                    print(response.body);
+                    if (response.statusCode == 200) {
+                        Navigator.pop(context);
+                    } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Failed to register vehicle'),
+                            ),
+                        );
+                    };
+                },
+                child: Text(
+                  'Register Vehicle',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  shape: StadiumBorder(),
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Colors.purple,
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  void _registerVehicle() async {
-    final car = Cars(
-      userId: widget.tokenProvider.userId ?? '',
-      brand: _brandController.text,
-      model: _modelController.text,
-      year: int.parse(_yearController.text),
-      color: _colorController.text,
-      dimensions: Dimensions(
-        height: int.parse(_heightController.text),
-        width: int.parse(_widthController.text),
-        length: int.parse(_lengthController.text),
-      ),
-      numberPlate: _numberPlateController.text,
-    );
 
-    try {
-      final newCar = await widget.carService.createCar(car);
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Success'),
-          content: Text('Vehicle registered with ID: ${newCar.id}'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content: Text('Failed to register vehicle: $e'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
 }

@@ -23,13 +23,12 @@ class VehiclesScreen extends StatelessWidget {
               height: 70,
               child: ElevatedButton(
                 onPressed: () {
+                print(tokenProvider.token);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => RegisterVehicleScreen(
-                        carService: CarService(tokenProvider),
-                        apiService: apiService,
-                        tokenProvider: tokenProvider, // Aquí debería ser tokenProvider
+                        // Pasar la instancia de TokenProvider
                       ),
                     ),
                   );
