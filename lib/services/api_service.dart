@@ -64,4 +64,23 @@ class ApiService {
       throw Exception('Failed to logout: ${response.statusCode}');
     }
   }
+
+  Future<Map<String, dynamic>> getUserData(String token) async {
+    final String path = "auth/users";
+
+    final response = await http.get(
+      Uri.parse(baseUrl + path),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization':
+            'Bearer $token', // Envía el token de autenticación en el encabezado Authorization
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to get user data: ${response.statusCode}');
+    }
+  }
 }

@@ -87,8 +87,10 @@ class LoginPage extends StatelessWidget {
           onPressed: () {
             final email = usernameController.text;
             final password = passwordController.text;
-            UserService(ApiService()).login(email, password).then((response) {
-              // Si el inicio de sesión es exitoso, redirige a la pantalla de MapScreen
+            UserService(ApiService()).login(email, password).then((token) {
+              // Guarda el token en TokenProvider
+              Provider.of<TokenProvider>(context, listen: false).token = token;
+              // Redirige a la pantalla de MapScreen
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => NavigationBarScreen()),

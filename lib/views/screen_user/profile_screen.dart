@@ -10,12 +10,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  Map<String, dynamic>? _userData;
   bool _isEditing = false;
-  String _username = 'john_doe';
-  String _name = 'John';
-  String _lastName = 'Doe';
-  String _phone = '123-456-7890';
-  String _email = 'john.doe@example.com';
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
@@ -23,12 +19,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _emailController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _nameController.text = _name;
-    _lastNameController.text = _lastName;
-    _phoneController.text = _phone;
-    _emailController.text = _email;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    String? authToken =
+        Provider.of<TokenProvider>(context, listen: false).token;
+    _fetchUserData(authToken);
+  }
+
+  Future<void> _fetchUserData(String? token) async {
+    if (token != null) {
+      print('Token recibido: $token'); // Imprimir el token recibido
+      try {
+        final userData = await ApiService().getUserData(token);
+        setState(() {
+          _userData = userData["data"];
+        });
+      } catch (e) {
+        print('Error fetching user data: $e');
+      }
+    } else {
+      print('Token es nulo'); // Manejo del caso en que el token sea nulo
+    }
   }
 
   @override
@@ -57,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(height: 10),
             Center(
               child: Text(
-                '$_username',
+                _userData?['username'] ?? '',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
@@ -65,26 +76,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ListTile(
               title: Text('Nombre'),
               subtitle: _isEditing
-                  ? _buildEditableField(_nameController)
-                  : Text(_name),
+                  ? _buildEditableField(
+                      _nameController, _userData?['first_name'])
+                  : Text(_userData?['first_name'] ?? ''),
             ),
             ListTile(
               title: Text('Apellido'),
               subtitle: _isEditing
-                  ? _buildEditableField(_lastNameController)
-                  : Text(_lastName),
+                  ? _buildEditableField(
+                      _lastNameController, _userData?['last_name'])
+                  : Text(_userData?['last_name'] ?? ''),
             ),
             ListTile(
               title: Text('Teléfono'),
               subtitle: _isEditing
-                  ? _buildEditableField(_phoneController)
-                  : Text(_phone),
+                  ? _buildEditableField(_phoneController, _userData?['phone'])
+                  : Text(_userData?['phone']?.toString() ?? ''),
             ),
             ListTile(
               title: Text('Email'),
               subtitle: _isEditing
-                  ? _buildEditableField(_emailController)
-                  : Text(_email),
+                  ? _buildEditableField(_emailController, _userData?['email'])
+                  : Text(_userData?['email'] ?? ''),
             ),
             SizedBox(height: 20),
             Row(
@@ -100,50 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Llama al método logoutUser de tu ApiService
-                    ApiService().logoutUser().then((response) {
-                      // Muestra el mensaje de éxito del logout
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text("Logout Successful"),
-                          content: Text(response["data"]["message"]),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                // Cierra el diálogo y navega de regreso a la pantalla de login
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginPage()),
-                                );
-                              },
-                              child: Text("OK"),
-                            ),
-                          ],
-                        ),
-                      );
-                      // Limpia el token almacenado en TokenProvider
-                      Provider.of<TokenProvider>(context, listen: false)
-                          .clearToken();
-                    }).catchError((error) {
-                      // Maneja los errores si ocurre algún problema durante el logout
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text("Error"),
-                          content: Text("Failed to logout. Please try again."),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text("OK"),
-                            ),
-                          ],
-                        ),
-                      );
-                    });
+                    _logoutUser();
                   },
                   child: Text('Log Out'),
                 ),
@@ -155,7 +125,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildEditableField(TextEditingController controller) {
+  Widget _buildEditableField(
+      TextEditingController controller, String? initialValue) {
+    controller.text = initialValue ?? '';
     return Container(
       width: 200,
       child: TextField(
@@ -165,6 +137,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  void _logoutUser() {
+    ApiService().logoutUser().then((response) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Logout Successful"),
+          content: Text(response["data"]["message"]),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+      Provider.of<TokenProvider>(context, listen: false).clearToken();
+    }).catchError((error) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Error"),
+          content: Text("Failed to logout. Please try again."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   @override

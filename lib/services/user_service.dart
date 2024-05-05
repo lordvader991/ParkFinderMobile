@@ -13,19 +13,21 @@ class UserService {
     try {
       final response = await _apiService.createUser(userData);
       print('Usuario registrado exitosamente: ${response["data"]["message"]}');
-      print('Token de autenticación: ${response["data"]["token"]}');
+      // Consider storing the token if needed for future use
     } catch (e) {
       print('Error al registrar usuario: $e');
       throw Exception('Failed to register user: $e');
     }
   }
 
-  Future<void> login(String email, String password) async {
+  Future<String> login(String email, String password) async {
     try {
       final response = await _apiService.loginUser(email, password);
       final token = response['data']['token'];
       print('Inicio de sesión exitoso: ${response["data"]["message"]}');
       print('Token de autenticación: $token');
+      // Consider storing the token (e.g., using TokenProvider)
+      return token;
     } catch (e) {
       print('Error al iniciar sesión: $e');
       throw Exception('Failed to login: $e');
