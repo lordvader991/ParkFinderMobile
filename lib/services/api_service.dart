@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = "http://192.168.1.3:3000/api/v1/";
+  final String baseUrl = "http://192.168.1.211:3000/api/v1/";
 
   ApiService();
 
@@ -72,8 +72,7 @@ class ApiService {
       Uri.parse(baseUrl + path),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization':
-            'Bearer $token', // Envía el token de autenticación en el encabezado Authorization
+        'Authorization': 'Bearer $token',
       },
     );
 
@@ -81,6 +80,26 @@ class ApiService {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to get user data: ${response.statusCode}');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateUser(
+      String token, Map<String, dynamic> userData) async {
+    final String path =
+        "auth/users/me"; // Ruta para actualizar datos del usuario actual
+
+    final response = await http.put(
+      Uri.parse(baseUrl + path),
+      body: jsonEncode(userData),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to update user: ${response.statusCode}');
     }
   }
 

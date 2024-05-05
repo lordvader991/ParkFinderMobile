@@ -33,6 +33,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final userData = await ApiService().getUserData(token);
         setState(() {
           _userData = userData["data"];
+          // Llenar los controladores de texto con los datos actuales del usuario
+          _nameController.text = _userData?['first_name'] ?? '';
+          _lastNameController.text = _userData?['last_name'] ?? '';
+          _phoneController.text = _userData?['phone']?.toString() ?? '';
+          _emailController.text = _userData?['email'] ?? '';
         });
       } catch (e) {
         print('Error fetching user data: $e');
@@ -76,46 +81,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ListTile(
               title: Text('Nombre'),
               subtitle: _isEditing
-                  ? _buildEditableField(
-                      _nameController, _userData?['first_name'])
+                  ? _buildEditableField(_nameController)
                   : Text(_userData?['first_name'] ?? ''),
             ),
             ListTile(
               title: Text('Apellido'),
               subtitle: _isEditing
-                  ? _buildEditableField(
-                      _lastNameController, _userData?['last_name'])
+                  ? _buildEditableField(_lastNameController)
                   : Text(_userData?['last_name'] ?? ''),
             ),
             ListTile(
               title: Text('Teléfono'),
               subtitle: _isEditing
-                  ? _buildEditableField(_phoneController, _userData?['phone'])
+                  ? _buildEditableField(_phoneController)
                   : Text(_userData?['phone']?.toString() ?? ''),
             ),
             ListTile(
               title: Text('Email'),
-              subtitle: _isEditing
-                  ? _buildEditableField(_emailController, _userData?['email'])
-                  : Text(_userData?['email'] ?? ''),
+              subtitle: Text(_userData?['email'] ?? ''),
             ),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _isEditing = !_isEditing;
-                    });
-                  },
-                  child: Text(_isEditing ? 'Guardar' : 'Editar'),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _isEditing = !_isEditing;
+                      });
+                    },
+                    child: Text(_isEditing ? 'Cancelar' : 'Editar'),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    _logoutUser();
-                  },
-                  child: Text('Log Out'),
+                if (_isEditing)
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _saveChanges();
+                      },
+                      child: Text('Guardar'),
+                    ),
+                  ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _logoutUser();
+                    },
+                    child: Text('Log Out'),
+                  ),
                 ),
               ],
             ),
@@ -125,13 +139,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildEditableField(
-      TextEditingController controller, String? initialValue) {
-    controller.text = initialValue ?? '';
+  Widget _buildEditableField(TextEditingController controller) {
     return Container(
       width: 200,
       child: TextField(
         controller: controller,
+        enabled: _isEditing,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
         ),
@@ -177,6 +190,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     });
+  }
+
+  Future<void> _saveChanges() async {
+    final token =
+        Provider.of<TokenProvider>(context, listen: false).token ?? '';
+    final updatedUserData = {
+      'first_name': _nameController.text,
+      'last_name': _lastNameController.text,
+      'phone': _phoneController.text,
+    };
+
+    try {
+      await ApiService().updateUser(token, updatedUserData);
+      setState(() {
+        _isEditing =
+            false; // Deshabilitar el modo de edición después de guardar
+      });
+      // Mensaje de éxito
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Cambios guardados exitosamente')),
+      );
+    } catch (e) {
+      print('Error al guardar cambios: $e');
+      // Mensaje de error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al guardar cambios')),
+      );
+    }
   }
 
   @override

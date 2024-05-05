@@ -27,7 +27,6 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
   final VehicleService carService = VehicleService();
   late Size mediaSize;
 
-
   @override
   Widget build(BuildContext context) {
     mediaSize = MediaQuery.of(context).size;
@@ -172,40 +171,42 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                    final tokenProvider = Provider.of<TokenProvider>(context, listen: false);
-                    final authToken = tokenProvider.token;
-                    print('Token: $authToken');
-                    Map<String, dynamic> requestBody = {
+                  final tokenProvider =
+                      Provider.of<TokenProvider>(context, listen: false);
+
+                  final authToken = tokenProvider.token;
+                  print('Token: $authToken');
+                  Map<String, dynamic> requestBody = {
                     'brand': _brandController.text,
                     'model': _modelController.text,
                     'year': int.parse(_yearController.text),
                     'color': _colorController.text,
                     'dimensions': {
-                        'height': int.parse(_heightController.text),
-                        'width': int.parse(_widthController.text),
-                        'length': int.parse(_lengthController.text),
+                      'height': int.parse(_heightController.text),
+                      'width': int.parse(_widthController.text),
+                      'length': int.parse(_lengthController.text),
                     },
                     'number_plate': _numberPlateController.text,
-                    };
-                    final response = await http.post(
-                        Uri.parse('http://192.168.1.3:3000/api/v1/auth/users/cars'),
-                        body: jsonEncode(requestBody),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization':'Bearer $authToken'
-                        },
-
+                  };
+                  final response = await http.post(
+                    Uri.parse('http://192.168.1.211:3000/api/v1/auth/cars'),
+                    body: jsonEncode(requestBody),
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer $authToken'
+                    },
+                  );
+                  print(response.body);
+                  if (response.statusCode == 200) {
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Failed to register vehicle'),
+                      ),
                     );
-                    print(response.body);
-                    if (response.statusCode == 200) {
-                        Navigator.pop(context);
-                    } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text('Failed to register vehicle'),
-                            ),
-                        );
-                    };
+                  }
+                  ;
                 },
                 child: Text(
                   'Register Vehicle',
@@ -223,6 +224,4 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
       ),
     );
   }
-
-
 }

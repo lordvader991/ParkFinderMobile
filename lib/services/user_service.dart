@@ -33,4 +33,15 @@ class UserService {
       throw Exception('Failed to login: $e');
     }
   }
+
+  Future<void> updateUser(String token, Map<String, dynamic> userData) async {
+    try {
+      final response = await _apiService.updateUser(token, userData);
+      // Manejar la respuesta según sea necesario
+      print('Usuario actualizado exitosamente: ${response["data"]["message"]}');
+    } catch (e) {
+      print('Error al actualizar usuario: $e');
+      throw Exception('Failed to update user: $e');
+    }
+  }
 }
