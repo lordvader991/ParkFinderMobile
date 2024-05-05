@@ -83,4 +83,24 @@ class ApiService {
       throw Exception('Failed to get user data: ${response.statusCode}');
     }
   }
+
+  Future<http.Response> get(String path) async {
+    final response = await http.get(Uri.parse(baseUrl + path));
+
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      throw Exception('Failed to get data from API: ${response.statusCode}');
+    }
+  }
+
+  Future<http.Response> post(String path, Map<String, dynamic> body,
+      {Map<String, String>? headers}) async {
+    final response = await http.post(
+      Uri.parse(baseUrl + path),
+      body: jsonEncode(body),
+      headers: headers ?? {'Content-Type': 'application/json'},
+    );
+    return response;
+  }
 }

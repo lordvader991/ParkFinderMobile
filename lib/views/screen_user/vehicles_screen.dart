@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:parkfinder/services/api_service.dart';
+import 'package:parkfinder/services/car_service.dart';
 import 'package:parkfinder/views/screen_user/vehicle_register_screen.dart';
 
 class VehiclesScreen extends StatelessWidget {
+  final ApiService apiService =
+      ApiService(); // Crear una instancia de ApiService
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +24,13 @@ class VehiclesScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RegisterVehicleScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => RegisterVehicleScreen(
+                        carService: CarService(
+                            apiService), // Crear una instancia de CarService
+                        apiService: apiService, // Pasar apiService
+                      ),
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -36,12 +47,11 @@ class VehiclesScreen extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: 10, 
+              itemCount: 10,
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text('Vehicle ${index + 1}'),
-                  onTap: () {
-                  },
+                  onTap: () {},
                 );
               },
             ),
