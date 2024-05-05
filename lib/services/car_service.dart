@@ -3,23 +3,38 @@ import 'package:http/http.dart' as http;
 import 'package:parkfinder/models/cars.dart';
 
 class VehicleService {
-  final String baseUrl = 'http://192.168.1.3:3000/api/v1/auth/cars';
+  final String baseUrl = 'http://192.168.1.3:3000/api/v1/auth/users/cars';
 
 
-  Future<List<Cars>> getVehicles(String token) async {
+Future<List<Map<String, dynamic>>> getVehicles(String token) async {
+  try {
     final response = await http.get(
       Uri.parse(baseUrl),
-      headers: {'Authorization': 'Bearer $token'},
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> body = jsonDecode(response.body);
-      List<Cars> vehicles = body.map((dynamic item) => Cars.fromJson(item)).toList();
+      List<dynamic> data = json.decode(response.body)['data'];
+      List<Map<String, dynamic>> vehicles = data.map((item) {
+        return {
+          'brand': item['brand'],
+          'model': item['model'],
+          'number_plate': item['number_plate'],
+        };
+      }).toList();
       return vehicles;
     } else {
-      throw 'Failed to load vehicles';
+      throw Exception('Failed to load vehicles: ${response.statusCode}');
     }
+  } catch (error) {
+    throw Exception('Error fetching vehicles: $error');
   }
+}
+
+
+
 
   Future<Cars> getVehicleById(String id, String token) async {
     final response = await http.get(
@@ -46,14 +61,21 @@ Future<void> createRecord(Map<String, dynamic> data) async {
     }
   }
 
-  Future<void> deleteVehicleById(String id, String token) async {
-    final response = await http.delete(
-      Uri.parse('$baseUrl/$id'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-
-    if (response.statusCode != 200) {
-      throw 'Failed to delete vehicle';
+    Future<void> deleteVehicle(String id, String token) async {
+    try {
+        final response = await http.delete(
+        Uri.parse('$baseUrl/$id'),
+        headers: {'Authorization': 'Bearer $token'},
+        );
+        if (response.statusCode == 200) {
+        print('Vehicle deleted successfully');
+        } else {
+        throw Exception('Failed to delete vehicle: ${response.statusCode}');
+        }
+    } catch (error) {
+        throw Exception('Error deleting vehicle: $error');
     }
-  }
+    }
+
 }
+

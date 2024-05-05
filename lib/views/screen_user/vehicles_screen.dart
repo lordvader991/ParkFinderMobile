@@ -1,12 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/services/car_service.dart';
 import 'package:parkfinder/services/token_provider.dart';
 import 'package:parkfinder/views/screen_user/vehicle_register_screen.dart';
+import 'package:provider/provider.dart';
 
-class VehiclesScreen extends StatelessWidget {
-  final TokenProvider tokenProvider = TokenProvider();
-  final ApiService apiService = ApiService();
+class VehiclesScreen extends StatefulWidget {
+  const VehiclesScreen({Key? key}) : super(key: key);
+
+  @override
+  State<VehiclesScreen> createState() => _VehiclesScreenState();
+}
+
+class _VehiclesScreenState extends State<VehiclesScreen> {
+  final VehicleService _vehicleService = VehicleService();
+  late List<Map<String, dynamic>> _vehicles;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      String? token = Provider.of<TokenProvider>(context, listen: false).token;
+      if (token != null) {
+        List<Map<String, dynamic>> vehicles = await _vehicleService.getVehicles(token);
+        setState(() {
+          _vehicles = vehicles;
+        });
+      } else {
+        print('Token is null');
+      }
+    } catch (error) {
+      print('Error fetching data: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +52,10 @@ class VehiclesScreen extends StatelessWidget {
               height: 70,
               child: ElevatedButton(
                 onPressed: () {
-                print(tokenProvider.token);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RegisterVehicleScreen(
-                        // Pasar la instancia de TokenProvider
-                      ),
+                      builder: (context) => RegisterVehicleScreen(),
                     ),
                   );
                 },
@@ -47,11 +73,36 @@ class VehiclesScreen extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: 10,
+              itemCount: _vehicles.length,
               itemBuilder: (context, index) {
+                final vehicle = _vehicles[index];
                 return ListTile(
-                  title: Text('Vehicle ${index + 1}'),
-                  onTap: () {},
+                  leading: Icon(Icons.car_rental, size: 50),
+                  title: Text(
+                    '${vehicle['brand']} ${vehicle['model']}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(vehicle['number_plate'] ?? 'Number plate not available'),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () async {
+                      try {
+                        String? token = Provider.of<TokenProvider>(context, listen: false).token;
+                        print('Token: $token'); // Imprime el token cuando se toca el icono de la basura
+                        if (token != null) {
+                          String vehicleId = vehicle['_id'];
+                          await _vehicleService.deleteVehicle(vehicleId, token);
+                          setState(() {
+                            _vehicles.removeAt(index);
+                          });
+                        } else {
+                          print('Token is null');
+                        }
+                      } catch (error) {
+                        print('Error deleting vehicle: $error');
+                      }
+                    },
+                  ),
                 );
               },
             ),

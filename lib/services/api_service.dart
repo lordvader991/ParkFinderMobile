@@ -66,7 +66,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> getUserData(String token) async {
-    final String path = "auth/users";
+    final String path = "auth/users/me";
 
     final response = await http.get(
       Uri.parse(baseUrl + path),
