@@ -48,19 +48,19 @@ class _NavigationBarScreenState extends State<NavigationBarScreen> {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.map),
-              label: 'Mapa',
+              label: 'Map',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              label: 'Perfil',
+              label: 'Profile',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.directions_car),
-              label: 'Mis Vehículos',
+              label: 'My vehicles',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.home_work),
-              label: 'Mis Garajes',
+              label: 'My garages',
             ),
           ],
           backgroundColor: Colors.purple,

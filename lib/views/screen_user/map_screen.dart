@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:parkfinder/views/screen_user/garage_details.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -11,6 +12,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   bool _isLocationEnabled = false;
+  List<Marker> _markers = [];
 
   @override
   void initState() {
@@ -50,10 +52,43 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  void _addMarkers() {
+    List<LatLng> coordinates = [
+      LatLng(-17.677255, -63.141600),
+      LatLng(-17.682680, -63.149881),
+      LatLng(-17.682186, -63.161723),
+      LatLng(-17.691403, -63.159401),
+      LatLng(-17.692079, -63.143956),
+    ];
+
+    for (int i = 0; i < coordinates.length; i++) {
+      _markers.add(
+        Marker(
+          markerId: MarkerId('marker$i'),
+          position: coordinates[i],
+          infoWindow: InfoWindow(title: 'Marker $i'),
+          onTap: () {
+            _handleMarkerTap(i);
+          },
+        ),
+      );
+    }
+  }
+
+  void _handleMarkerTap(int markerIndex) {
+    // Aquí puedes abrir la pantalla GarageDetails
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GarageDetails()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    _addMarkers(); // Agrega los marcadores al inicio
+
     return MaterialApp(
-    debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: GoogleMap(
           onMapCreated: _onMapCreated,
@@ -63,9 +98,9 @@ class _MapScreenState extends State<MapScreen> {
           ),
           myLocationEnabled: _isLocationEnabled,
           myLocationButtonEnabled: false,
-          zoomControlsEnabled:
-              false, // Desactiva los botones de zoom, quitarlo si o si
+          zoomControlsEnabled: false,
           zoomGesturesEnabled: true,
+          markers: Set<Marker>.from(_markers),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _getCurrentLocation,
