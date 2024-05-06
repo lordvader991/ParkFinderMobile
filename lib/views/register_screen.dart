@@ -81,7 +81,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   prefixIcon: const Icon(Icons.person),
                 ),
               ),
-              // Resto de tus TextFields...
+              const SizedBox(height: 20),
+              TextField(
+                controller: widget.emailController,
+                decoration: InputDecoration(
+                  hintText: "Email",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  filled: true,
+                  prefixIcon: const Icon(Icons.email),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: widget.passwordController,
+                decoration: InputDecoration(
+                  hintText: "Password",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Colors.purple.withOpacity(0.1),
+                  filled: true,
+                  prefixIcon: const Icon(Icons.lock),
+                ),
+                obscureText: true,
+              ),
               const SizedBox(height: 20),
               _buildDropdownWithLabel(
                 label: 'Role',
@@ -147,97 +175,86 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 }).toList(),
               ),
               const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  _selectDate(context);
-                },
-                child: AbsorbPointer(
-                  child: TextFormField(
-                    controller: widget.dobController,
-                    decoration: InputDecoration(
-                      hintText: "Date of Birth",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
-                        borderSide: BorderSide.none,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        _selectDate(context);
+                      },
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: widget.dobController,
+                          decoration: InputDecoration(
+                            hintText: "Date of Birth",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: BorderSide.none,
+                            ),
+                            fillColor: Colors.purple.withOpacity(0.1),
+                            filled: true,
+                            prefixIcon: const Icon(Icons.calendar_today),
+                          ),
+                        ),
                       ),
-                      fillColor: Colors.purple.withOpacity(0.1),
-                      filled: true,
-                      prefixIcon: const Icon(Icons.calendar_today),
                     ),
                   ),
-                ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: TextField(
+                      controller: widget.phoneController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: "Phone",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none,
+                        ),
+                        fillColor: Colors.purple.withOpacity(0.1),
+                        filled: true,
+                        prefixIcon: const Icon(Icons.phone),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
-              TextField(
-                controller: widget.emailController,
-                decoration: InputDecoration(
-                  hintText: "Email",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: widget.countryController,
+                      decoration: InputDecoration(
+                        hintText: "Country",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none,
+                        ),
+                        fillColor: Colors.purple.withOpacity(0.1),
+                        filled: true,
+                        prefixIcon: const Icon(Icons.location_on),
+                      ),
+                    ),
                   ),
-                  fillColor: Colors.purple.withOpacity(0.1),
-                  filled: true,
-                  prefixIcon: const Icon(Icons.email),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: widget.passwordController,
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: TextField(
+                      controller: widget.cityController,
+                      decoration: InputDecoration(
+                        hintText: "City",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none,
+                        ),
+                        fillColor: Colors.purple.withOpacity(0.1),
+                        filled: true,
+                        prefixIcon: const Icon(Icons.location_city),
+                      ),
+                    ),
                   ),
-                  fillColor: Colors.purple.withOpacity(0.1),
-                  filled: true,
-                  prefixIcon: const Icon(Icons.lock),
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: widget.phoneController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: "Phone",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.purple.withOpacity(0.1),
-                  filled: true,
-                  prefixIcon: const Icon(Icons.phone),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: widget.countryController,
-                decoration: InputDecoration(
-                  hintText: "Country",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.purple.withOpacity(0.1),
-                  filled: true,
-                  prefixIcon: const Icon(Icons.location_on),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: widget.cityController,
-                decoration: InputDecoration(
-                  hintText: "City",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.purple.withOpacity(0.1),
-                  filled: true,
-                  prefixIcon: const Icon(Icons.location_city),
-                ),
+                ],
               ),
               const SizedBox(height: 20),
               SizedBox(
