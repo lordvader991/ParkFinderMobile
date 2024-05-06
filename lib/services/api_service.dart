@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = "http://192.168.1.3:3000/api/v1/";
+  final String baseUrl = "https://parkfinder.onrender.com/api/v1/";
 
   ApiService();
 
@@ -15,7 +15,6 @@ class ApiService {
       body: jsonEncode(userData),
       headers: {'Content-Type': 'application/json'},
     );
-
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {

@@ -3,8 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:parkfinder/models/cars.dart';
 
 class VehicleService {
-  final String baseUrl = 'http://192.168.1.3:3000/api/v1/auth/users/cars';
-  final String baseUrl2 = 'http://192.168.1.3:3000/api/v1/auth/cars';
+  final String baseUrl =
+      'https://parkfinder.onrender.com/api/v1/auth/users/cars';
+  final String baseUrl2 = 'https://parkfinder.onrender.com/api/v1/auth/cars';
 
   Future<List<Map<String, dynamic>>> getVehicles(String token) async {
     try {

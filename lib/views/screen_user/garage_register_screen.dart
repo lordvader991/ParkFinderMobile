@@ -134,7 +134,9 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
             ),
             SizedBox(height: 20),
             DropdownButtonFormField<String>(
-              value: _stateController.text.isNotEmpty ? _stateController.text : null,
+              value: _stateController.text.isNotEmpty
+                  ? _stateController.text
+                  : null,
               onChanged: (value) {
                 setState(() {
                   _stateController.text = value!;
@@ -156,7 +158,9 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
             ),
             SizedBox(height: 20),
             DropdownButtonFormField<int>(
-              value: _ratingController.text.isNotEmpty ? int.parse(_ratingController.text) : null,
+              value: _ratingController.text.isNotEmpty
+                  ? int.parse(_ratingController.text)
+                  : null,
               onChanged: (value) {
                 setState(() {
                   _ratingController.text = value.toString();
@@ -179,7 +183,8 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                final tokenProvider = Provider.of<TokenProvider>(context, listen: false);
+                final tokenProvider =
+                    Provider.of<TokenProvider>(context, listen: false);
                 final authToken = tokenProvider.token;
                 print('Token: $authToken');
                 Map<String, dynamic> requestBody = {
@@ -215,7 +220,8 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
                   'rating': double.parse(_ratingController.text),
                 };
                 final response = await http.post(
-                  Uri.parse('http://localhost:3000/api/v1/auth/users/garages'),
+                  Uri.parse(
+                      'https://parkfinder.onrender.com/api/v1/auth/users/garages'),
                   body: jsonEncode(requestBody),
                   headers: {
                     'Content-Type': 'application/json',
@@ -270,7 +276,9 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
           children: [
             Expanded(
               child: TextField(
-                controller: _heightControllers.length > placeNumber - 1 ? _heightControllers[placeNumber - 1] : TextEditingController(),
+                controller: _heightControllers.length > placeNumber - 1
+                    ? _heightControllers[placeNumber - 1]
+                    : TextEditingController(),
                 decoration: InputDecoration(
                   hintText: 'Height',
                   prefixIcon: Icon(Icons.height),
@@ -283,7 +291,9 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
             SizedBox(width: 20),
             Expanded(
               child: TextField(
-                controller: _widthControllers.length > placeNumber - 1 ? _widthControllers[placeNumber - 1] : TextEditingController(),
+                controller: _widthControllers.length > placeNumber - 1
+                    ? _widthControllers[placeNumber - 1]
+                    : TextEditingController(),
                 decoration: InputDecoration(
                   hintText: 'Width',
                   prefixIcon: Icon(Icons.straighten),
@@ -297,7 +307,9 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
         ),
         SizedBox(height: 20),
         TextField(
-          controller: _lengthControllers.length > placeNumber - 1 ? _lengthControllers[placeNumber - 1] : TextEditingController(),
+          controller: _lengthControllers.length > placeNumber - 1
+              ? _lengthControllers[placeNumber - 1]
+              : TextEditingController(),
           decoration: InputDecoration(
             hintText: 'Length',
             prefixIcon: Icon(Icons.straighten),
@@ -311,7 +323,9 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
           children: [
             Expanded(
               child: TextField(
-                controller: _fromControllers.length > placeNumber - 1 ? _fromControllers[placeNumber - 1] : TextEditingController(),
+                controller: _fromControllers.length > placeNumber - 1
+                    ? _fromControllers[placeNumber - 1]
+                    : TextEditingController(),
                 decoration: InputDecoration(
                   hintText: 'From',
                   prefixIcon: Icon(Icons.access_time),
@@ -327,7 +341,9 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
             SizedBox(width: 20),
             Expanded(
               child: TextField(
-                controller: _toControllers.length > placeNumber - 1 ? _toControllers[placeNumber - 1] : TextEditingController(),
+                controller: _toControllers.length > placeNumber - 1
+                    ? _toControllers[placeNumber - 1]
+                    : TextEditingController(),
                 decoration: InputDecoration(
                   hintText: 'To',
                   prefixIcon: Icon(Icons.access_time),
@@ -348,7 +364,15 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
           onChanged: (value) {
             setState(() {});
           },
-          items: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) {
+          items: [
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+            'Sunday'
+          ].map((day) {
             return DropdownMenuItem(
               value: day,
               child: Text(day),
@@ -384,7 +408,8 @@ class _RegisterGarageScreenState extends State<RegisterGarageScreen> {
     }
   }
 
-  Future<void> _selectTime(BuildContext context, TextEditingController controller) async {
+  Future<void> _selectTime(
+      BuildContext context, TextEditingController controller) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),

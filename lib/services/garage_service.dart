@@ -2,12 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:parkfinder/models/garage.dart';
 
-
 class GarageService {
-  final String baseUrl = 'http://localhost:3000/api/v1/auth/users/garages';
+  final String baseUrl =
+      'https://parkfinder.onrender.com/api/v1/auth/users/garages';
 
-
-Future<List<Map<String, dynamic>>> getGarages(String token) async {
+  Future<List<Map<String, dynamic>>> getGarages(String token) async {
     try {
       final response = await http.get(
         Uri.parse(baseUrl),
@@ -25,8 +24,6 @@ Future<List<Map<String, dynamic>>> getGarages(String token) async {
             'state': item['state'],
             'price_hour': item['price_hour'],
             'description': item['description'],
-
-
           };
         }).toList();
         return garages;
@@ -38,7 +35,7 @@ Future<List<Map<String, dynamic>>> getGarages(String token) async {
     }
   }
 
- Future<Garage> getGarageById(String garageId, String token) async {
+  Future<Garage> getGarageById(String garageId, String token) async {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/$garageId'),
@@ -60,7 +57,6 @@ Future<List<Map<String, dynamic>>> getGarages(String token) async {
       throw Exception('Error fetching garage details: $error');
     }
   }
-
 
   Future<void> updateGarage(
       String garageId, Map<String, dynamic> data, String token) async {
