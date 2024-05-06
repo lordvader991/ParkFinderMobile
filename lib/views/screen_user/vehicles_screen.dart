@@ -3,6 +3,7 @@ import 'package:parkfinder/services/car_service.dart';
 import 'package:parkfinder/services/token_provider.dart';
 import 'package:parkfinder/views/screen_user/vehicle_register_screen.dart';
 import 'package:provider/provider.dart';
+import 'vehicle_details_screen.dart';
 
 class VehiclesScreen extends StatefulWidget {
   const VehiclesScreen({Key? key}) : super(key: key);
@@ -84,34 +85,48 @@ class _VehiclesScreenState extends State<VehiclesScreen> {
                     itemCount: _vehicles.length,
                     itemBuilder: (context, index) {
                       final vehicle = _vehicles[index];
-                      return ListTile(
-                        leading: Icon(Icons.car_rental, size: 50),
-                        title: Text(
-                          '${vehicle['brand']} ${vehicle['model']}',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(vehicle['number_plate'] ??
-                            'Number plate not available'),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () async {
-                            try {
-                              String? token = Provider.of<TokenProvider>(
-                                      context,
-                                      listen: false)
-                                  .token;
-                              print('Token: $token');
-                              String vehicleId = vehicle['_id'];
-                              print('Vehicle ID: $vehicleId');
-                              await _vehicleService.deleteVehicle(
-                                  vehicleId, token!);
-                              setState(() {
-                                _vehicles.removeAt(index);
-                              });
-                            } catch (error) {
-                              print('Error deleting vehicle: $error');
-                            }
-                          },
+                      return GestureDetector(
+                        onTap: () {
+                          // Aquí puedes manejar la lógica para editar el vehículo seleccionado
+                          print('Selected vehicle ID: ${vehicle['_id']}');
+                          // Por ejemplo, podrías navegar a una pantalla de edición pasando el ID del vehículo
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  VehicleDetails(vehicleId: vehicle['_id']),
+                            ),
+                          );
+                        },
+                        child: ListTile(
+                          leading: Icon(Icons.car_rental, size: 50),
+                          title: Text(
+                            '${vehicle['brand']} ${vehicle['model']}',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(vehicle['number_plate'] ??
+                              'Number plate not available'),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () async {
+                              try {
+                                String? token = Provider.of<TokenProvider>(
+                                        context,
+                                        listen: false)
+                                    .token;
+                                print('Token: $token');
+                                String vehicleId = vehicle['_id'];
+                                print('Vehicle ID: $vehicleId');
+                                await _vehicleService.deleteVehicle(
+                                    vehicleId, token!);
+                                setState(() {
+                                  _vehicles.removeAt(index);
+                                });
+                              } catch (error) {
+                                print('Error deleting vehicle: $error');
+                              }
+                            },
+                          ),
                         ),
                       );
                     },

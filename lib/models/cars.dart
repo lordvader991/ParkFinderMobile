@@ -8,6 +8,13 @@ class Dimensions {
     required this.width,
     required this.length,
   });
+  Map<String, dynamic> toJson() {
+    return {
+      'height': height,
+      'width': width,
+      'length': length,
+    };
+  }
 
   factory Dimensions.fromJson(Map<String, dynamic> json) {
     return Dimensions(

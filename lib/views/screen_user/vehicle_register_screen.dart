@@ -191,7 +191,7 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
                   };
                   final response = await http.post(
                     Uri.parse(
-                        'http://192.168.1.3:3000/api/v1/auth/users/cars'),
+                        'http://192.168.1.211:3000/api/v1/auth/users/cars'),
                     body: jsonEncode(requestBody),
                     headers: {
                       'Content-Type': 'application/json',

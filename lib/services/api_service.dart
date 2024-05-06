@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = "http://192.168.1.3:3000/api/v1/";
+  final String baseUrl = "http://192.168.1.211:3000/api/v1/";
 
   ApiService();
 

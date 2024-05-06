@@ -4,6 +4,7 @@ import 'package:parkfinder/views/login_screen.dart';
 import 'package:parkfinder/views/screen_user/vehicle_register_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:parkfinder/services/token_provider.dart';
+import 'package:parkfinder/views/screen_user/garage_details.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
           TokenProvider(), // Crea una instancia de TokenProvider
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Your App',
+        title: 'ParkFinder',
         home: LoginPage(),
       ),
     );
