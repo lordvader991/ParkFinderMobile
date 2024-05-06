@@ -189,7 +189,7 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
                     'number_plate': _numberPlateController.text,
                   };
                   final response = await http.post(
-                    Uri.parse('http://192.168.1.211:3000/api/v1/auth/cars'),
+                    Uri.parse('http://192.168.1.3:3000/api/v1/auth/users/cars'),
                     body: jsonEncode(requestBody),
                     headers: {
                       'Content-Type': 'application/json',

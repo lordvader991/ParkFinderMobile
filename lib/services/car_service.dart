@@ -4,6 +4,7 @@ import 'package:parkfinder/models/cars.dart';
 
 class VehicleService {
   final String baseUrl = 'http://192.168.1.3:3000/api/v1/auth/users/cars';
+  final String baseUrl2 = 'http://192.168.1.3:3000/api/v1/auth/cars';
 
 
 Future<List<Map<String, dynamic>>> getVehicles(String token) async {
@@ -19,6 +20,7 @@ Future<List<Map<String, dynamic>>> getVehicles(String token) async {
       List<dynamic> data = json.decode(response.body)['data'];
       List<Map<String, dynamic>> vehicles = data.map((item) {
         return {
+          '_id': item['_id'],
           'brand': item['brand'],
           'model': item['model'],
           'number_plate': item['number_plate'],
@@ -61,21 +63,24 @@ Future<void> createRecord(Map<String, dynamic> data) async {
     }
   }
 
-    Future<void> deleteVehicle(String id, String token) async {
-    try {
-        final response = await http.delete(
-        Uri.parse('$baseUrl/$id'),
-        headers: {'Authorization': 'Bearer $token'},
-        );
-        if (response.statusCode == 200) {
-        print('Vehicle deleted successfully');
-        } else {
-        throw Exception('Failed to delete vehicle: ${response.statusCode}');
-        }
-    } catch (error) {
-        throw Exception('Error deleting vehicle: $error');
+Future<void> deleteVehicle(String vehicleId, String token) async {
+  try {
+    final response = await http.delete(
+      Uri.parse('$baseUrl2/$vehicleId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      print('Vehicle deleted successfully');
+    } else {
+      throw Exception('Failed to delete vehicle: ${response.statusCode}');
     }
-    }
+  } catch (error) {
+    throw Exception('Error deleting vehicle: $error');
+  }
+}
+
 
 }
 
