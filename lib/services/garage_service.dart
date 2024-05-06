@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:parkfinder/models/cars.dart';
+import 'package:parkfinder/models/garage.dart';
 
-class VehicleService {
-  final String baseUrl = 'http://192.168.1.3:3000/api/v1/auth/users/cars';
-  final String baseUrl2 = 'http://192.168.1.3:3000/api/v1/auth/cars';
 
-  Future<List<Map<String, dynamic>>> getVehicles(String token) async {
+class GarageService {
+  final String baseUrl = 'http://localhost:3000/api/v1/auth/users/garages';
+
+
+Future<List<Map<String, dynamic>>> getGarages(String token) async {
     try {
       final response = await http.get(
         Uri.parse(baseUrl),
@@ -17,51 +18,55 @@ class VehicleService {
 
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body)['data'];
-        List<Map<String, dynamic>> vehicles = data.map((item) {
+        List<Map<String, dynamic>> garages = data.map((item) {
           return {
             '_id': item['_id'],
-            'brand': item['brand'],
-            'model': item['model'],
-            'number_plate': item['number_plate'],
+            '_userId': item['_userId'],
+            'state': item['state'],
+            'price_hour': item['price_hour'],
+            'description': item['description'],
+
+
           };
         }).toList();
-        return vehicles;
+        return garages;
       } else {
-        throw Exception('Failed to load vehicles: ${response.statusCode}');
+        throw Exception('Failed to load garages: ${response.statusCode}');
       }
     } catch (error) {
-      throw Exception('Error fetching vehicles: $error');
+      throw Exception('Error fetching garages: $error');
     }
   }
 
-  Future<Cars> getVehicleById(String vehicleId, String token) async {
+ Future<Garage> getGarageById(String garageId, String token) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/$vehicleId'),
+        Uri.parse('$baseUrl/$garageId'),
         headers: {'Authorization': 'Bearer $token'},
       );
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         if (responseData['status'] == 'OK') {
-          return Cars.fromJson(responseData['data']);
+          return Garage.fromJson(responseData['data']);
         } else {
-          throw Exception('Vehicle not found');
+          throw Exception('Garage not found');
         }
       } else {
         throw Exception(
-            'Failed to load vehicle details: ${response.statusCode}');
+            'Failed to load garage details: ${response.statusCode}');
       }
     } catch (error) {
-      throw Exception('Error fetching vehicle details: $error');
+      throw Exception('Error fetching garage details: $error');
     }
   }
 
-  Future<void> updateVehicle(
-      String vehicleId, Map<String, dynamic> data, String token) async {
+
+  Future<void> updateGarage(
+      String garageId, Map<String, dynamic> data, String token) async {
     try {
       final response = await http.put(
-        Uri.parse('$baseUrl/$vehicleId'),
+        Uri.parse('$baseUrl/$garageId'),
         body: json.encode(data),
         headers: {
           'Content-Type': 'application/json',
@@ -70,10 +75,10 @@ class VehicleService {
       );
 
       if (response.statusCode != 200) {
-        throw Exception('Failed to update vehicle: ${response.statusCode}');
+        throw Exception('Failed to update garage: ${response.statusCode}');
       }
     } catch (error) {
-      throw Exception('Error updating vehicle: $error');
+      throw Exception('Error updating garage: $error');
     }
   }
 
@@ -89,21 +94,21 @@ class VehicleService {
     }
   }
 
-  Future<void> deleteVehicle(String vehicleId, String token) async {
+  Future<void> deleteGarage(String garageId, String token) async {
     try {
       final response = await http.delete(
-        Uri.parse('$baseUrl2/$vehicleId'),
+        Uri.parse('$baseUrl/$garageId'),
         headers: {
           'Authorization': 'Bearer $token',
         },
       );
       if (response.statusCode == 200) {
-        print('Vehicle deleted successfully');
+        print('Vehicle garage successfully');
       } else {
-        throw Exception('Failed to delete vehicle: ${response.statusCode}');
+        throw Exception('Failed to delete garage: ${response.statusCode}');
       }
     } catch (error) {
-      throw Exception('Error deleting vehicle: $error');
+      throw Exception('Error deleting garage: $error');
     }
   }
 }
