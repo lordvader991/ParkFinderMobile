@@ -5,6 +5,7 @@ import 'package:parkfinder/services/car_service.dart';
 import 'package:parkfinder/services/token_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'vehicles_screen.dart';
 
 class RegisterVehicleScreen extends StatefulWidget {
   const RegisterVehicleScreen({
@@ -189,7 +190,8 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
                     'number_plate': _numberPlateController.text,
                   };
                   final response = await http.post(
-                    Uri.parse('http://192.168.1.3:3000/api/v1/auth/users/cars'),
+                    Uri.parse(
+                        'http://192.168.1.211:3000/api/v1/auth/users/cars'),
                     body: jsonEncode(requestBody),
                     headers: {
                       'Content-Type': 'application/json',
@@ -216,6 +218,21 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
                   shape: StadiumBorder(),
                   padding: EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: Colors.purple,
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  shape: StadiumBorder(),
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Colors.red,
                 ),
               ),
             ],

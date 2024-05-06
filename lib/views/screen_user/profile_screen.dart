@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Perfil'),
+        title: Text('My profile'),
         centerTitle: true,
       ),
       body: Padding(
@@ -79,19 +79,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             SizedBox(height: 20),
             ListTile(
-              title: Text('Nombre'),
+              title: Text('Name'),
               subtitle: _isEditing
                   ? _buildEditableField(_nameController)
                   : Text(_userData?['first_name'] ?? ''),
             ),
             ListTile(
-              title: Text('Apellido'),
+              title: Text('Last Name'),
               subtitle: _isEditing
                   ? _buildEditableField(_lastNameController)
                   : Text(_userData?['last_name'] ?? ''),
             ),
             ListTile(
-              title: Text('Teléfono'),
+              title: Text('Phone'),
               subtitle: _isEditing
                   ? _buildEditableField(_phoneController)
                   : Text(_userData?['phone']?.toString() ?? ''),
@@ -111,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _isEditing = !_isEditing;
                       });
                     },
-                    child: Text(_isEditing ? 'Cancelar' : 'Editar'),
+                    child: Text(_isEditing ? 'Cancel' : 'Edit'),
                   ),
                 ),
                 if (_isEditing)
@@ -120,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onPressed: () {
                         _saveChanges();
                       },
-                      child: Text('Guardar'),
+                      child: Text('Save Changes'),
                     ),
                   ),
                 Expanded(
@@ -209,13 +209,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
       // Mensaje de éxito
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Cambios guardados exitosamente')),
+        SnackBar(content: Text('Saved changes successfully')),
       );
     } catch (e) {
       print('Error al guardar cambios: $e');
       // Mensaje de error
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al guardar cambios')),
+        SnackBar(content: Text('Error saving changes. Please try again.')),
       );
     }
   }

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:parkfinder/models/user.dart';
 import 'package:parkfinder/services/api_service.dart';
 import 'package:parkfinder/services/user_service.dart';
+import 'login_screen.dart'; // Suponiendo que tienes una pantalla de inicio de sesión
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({
@@ -38,6 +39,8 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   DateTime? _selectedDate;
+  String? _selectedRole;
+  String? _selectedGender;
 
   @override
   Widget build(BuildContext context) {
@@ -80,18 +83,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               // Resto de tus TextFields...
               const SizedBox(height: 20),
-              TextField(
-                controller: widget.roleController,
-                decoration: InputDecoration(
-                  hintText: "Role",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.purple.withOpacity(0.1),
-                  filled: true,
-                  prefixIcon: const Icon(Icons.person),
-                ),
+              _buildDropdownWithLabel(
+                label: 'Role',
+                value: _selectedRole,
+                onChanged: (newValue) {
+                  setState(() {
+                    _selectedRole = newValue;
+                    widget.roleController.text = newValue!;
+                  });
+                },
+                items: <String>['admin', 'customer', 'bidder']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
               const SizedBox(height: 20),
               TextField(
@@ -122,18 +129,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              TextField(
-                controller: widget.genderController,
-                decoration: InputDecoration(
-                  hintText: "Gender",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.purple.withOpacity(0.1),
-                  filled: true,
-                  prefixIcon: const Icon(Icons.person),
-                ),
+              _buildDropdownWithLabel(
+                label: 'Gender',
+                value: _selectedGender,
+                onChanged: (newValue) {
+                  setState(() {
+                    _selectedGender = newValue;
+                    widget.genderController.text = newValue!;
+                  });
+                },
+                items: <String>['Female', 'Male']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
               const SizedBox(height: 20),
               GestureDetector(
@@ -229,45 +240,61 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-             Container(
-                padding: const EdgeInsets.only(top: 3, left: 3),
-                child: ElevatedButton(
-                  onPressed: () {
-                    final signUpData = User(
-                      username: widget.usernameController.text,
-                      role: widget.roleController.text,
-                      firstName: widget.firstNameController.text,
-                      lastName: widget.lastNameController.text,
-                      gender: widget.genderController.text,
-                      dateOfBirth: widget.dobController.text,
-                      email: widget.emailController.text,
-                      password: widget.passwordController.text,
-                      phone: int.tryParse(widget.phoneController.text) ?? 0,
-                      country: widget.countryController.text,
-                      city: widget.cityController.text,
-                    );
-                    UserService(ApiService())
-                      .registerUser(signUpData as User)
-                      .then((_) {
+              SizedBox(
+                width: double.infinity,
+                child: Container(
+                  padding: const EdgeInsets.only(top: 3, left: 3),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final signUpData = User(
+                        username: widget.usernameController.text,
+                        role: widget.roleController.text,
+                        firstName: widget.firstNameController.text,
+                        lastName: widget.lastNameController.text,
+                        gender: widget.genderController.text,
+                        dateOfBirth: widget.dobController.text,
+                        email: widget.emailController.text,
+                        password: widget.passwordController.text,
+                        phone: int.tryParse(widget.phoneController.text) ?? 0,
+                        country: widget.countryController.text,
+                        city: widget.cityController.text,
+                      );
+                      UserService(ApiService())
+                          .registerUser(signUpData as User)
+                          .then((_) {
                         print("Guardado correctamente");
+                        // Limpiar campos del formulario
+                        _clearFormFields();
+                        // Navegar de regreso a la pantalla de inicio de sesión
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                LoginPage(), // Suponiendo que tienes una pantalla de inicio de sesión
+                          ),
+                        );
                       }).catchError((error) {
                         print("Error al guardar: $error");
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(error.toString())),
                         );
                       });
-                  },
-                  child: const Text(
-                    "Sign up",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.purple,
+                    },
+                    child: const Text(
+                      "Sign up",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                      backgroundColor: Colors.purple,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -289,6 +316,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+
+  Widget _buildDropdownWithLabel({
+    required String label,
+    required String? value,
+    required Function(String?) onChanged,
+    required List<DropdownMenuItem<String>> items,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.grey[700],
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 8),
+        DropdownButton<String>(
+          value: value,
+          onChanged: (newValue) {
+            onChanged(newValue);
+          },
+          items: items,
+          style: TextStyle(color: Colors.purple),
+          underline: Container(
+            height: 2,
+            color: Colors.purple,
+          ),
+          dropdownColor: Colors.white,
+          isExpanded: true,
+        ),
+      ],
+    );
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -303,5 +366,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
         widget.dobController.text = formattedDate;
       });
     }
+  }
+
+  void _clearFormFields() {
+    widget.usernameController.clear();
+    widget.roleController.clear();
+    widget.firstNameController.clear();
+    widget.lastNameController.clear();
+    widget.genderController.clear();
+    widget.emailController.clear();
+    widget.dobController.clear();
+    widget.passwordController.clear();
+    widget.phoneController.clear();
+    widget.countryController.clear();
+    widget.cityController.clear();
   }
 }
